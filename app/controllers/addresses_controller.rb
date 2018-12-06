@@ -13,8 +13,8 @@ class AddressesController < ApplicationController
 
   # POST /addresses/autocomplete
   def autocomplete
-    # Take our search query, capitalise all letters, split it by spaces, remove commas and full stops, and sort by longest to shortest
-    search_terms = params[:query].upcase.gsub(/[,.]/, '').split(" ").sort_by(&:length).reverse
+    # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove garbage characters, split it by spaces, and sort by longest to shortest
+    search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[,.\\%_]/, '').split(" ").sort_by(&:length).reverse
 
     # Form our base SQL query - a LIKE query with our first (and longest) term
     sql_query = "SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms[0] + "%'"
