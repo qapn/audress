@@ -31,7 +31,12 @@ class AddressesController < ApplicationController
     # Run the query
     results = Address.find_by_sql(sql_query)
 
-    render json: results, status: :ok
+    # Return either our results, or an indication that we got no results
+    unless results.blank?
+      render json: {"results":results}, status: :ok
+    else
+      render json: {"results":"ZERO"}, status: :ok
+    end
   end
 
   private
