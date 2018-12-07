@@ -16,27 +16,33 @@ class AddressesController < ApplicationController
     # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove garbage characters, split it by spaces, and sort by longest to shortest
     search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[,.\\%_]/, '').split(" ").sort_by(&:length).reverse
 
-    # Form our base SQL query - a LIKE query with our first (and longest) term
-    sql_query = "SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms[0] + "%'"
+    if search_terms.present?
+      # Form our base SQL query - a LIKE query with our first (and longest) term
+      sql_query = "SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms[0] + "%'"
 
-    # Build our nested query - with each term, we store our results to a temporary named result set (CTE), and then apply our next term on that result set
-    # So in most cases, your most ambiguous term will be searched at the end (e.g. a street number), when you've already narrowed down the possible addresses to a few hundred records
-    search_terms.drop(1).each_with_index do |term, i|
-      sql_query.prepend("WITH results" + i.to_s + " AS (").concat(") SELECT * FROM results" + i.to_s + " WHERE autocomplete LIKE '%" + term + "%'")
-    end
-    
-    # Limit the total results coming back from our query to 10
-    sql_query.concat(' LIMIT 10')
+      # Build our nested query - with each term, we store our results to a temporary named result set (CTE), and then apply our next term on that result set
+      # So in most cases, your most ambiguous term will be searched at the end (e.g. a street number), when you've already narrowed down the possible addresses to a few hundred records
+      search_terms.drop(1).each_with_index do |term, i|
+        sql_query.prepend("WITH results" + i.to_s + " AS (").concat(") SELECT * FROM results" + i.to_s + " WHERE autocomplete LIKE '%" + term + "%'")
+      end
+      
+      # Limit the total results coming back from our query to 10
+      sql_query.concat(' LIMIT 10')
 
-    # Run the query
-    results = Address.find_by_sql(sql_query)
+      # Run the query
+      results = Address.find_by_sql(sql_query)
 
-    # Return either our results, or an indication that we got no results
-    unless results.blank?
-      render json: {"results":results}, status: :ok
+      # Return either our results, or an indication that we got no results
+      unless results.blank?
+        render json: {"results":results}, status: :ok
+      else
+        render json: {"results":"ZERO"}, status: :ok
+      end
+
     else
       render json: {"results":"ZERO"}, status: :ok
     end
+    
   end
 
   private
