@@ -8,7 +8,11 @@ class AddressesController < ApplicationController
 
   # GET /addresses/1
   def show
-    render json: @address
+    if @address.present?
+      render json: @address, status: :ok
+    else
+      render json: {"results":"ZERO"}, status: :ok
+    end
   end
 
   # POST /addresses/autocomplete
@@ -40,7 +44,7 @@ class AddressesController < ApplicationController
       else
         render json: {"results":"ZERO"}, status: :ok
       end
-      
+
     else
       render json: {"results":"ZERO"}, status: :ok
     end
@@ -50,7 +54,7 @@ class AddressesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_address
-      @address = Address.find(params[:id])
+      @address = Address.find_by(address_detail_pid: params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
