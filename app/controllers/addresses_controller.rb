@@ -19,7 +19,7 @@ class AddressesController < ApplicationController
   def autocomplete
     # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove all but alphanumerical characters + spaces, split it by spaces, and sort by longest to shortest
     if params[:query].present?
-      search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[^A-Z0-9\s]/i, '').split(" ").sort_by(&:length).reverse
+      search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[^A-Z0-9\s]/i, ' ').split(" ").sort_by(&:length).reverse
     end
 
     if search_terms.present?
