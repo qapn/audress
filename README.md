@@ -10,6 +10,10 @@ The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Aust
 
 1. Build and configure a G-NAF flat table database with the [G-NAF Importer](https://github.com/qapn/gnaf-importer).
 1. Clone this repository.
+1. Start a local Redis instance in Docker:
+    ```
+    docker run --name redis -d --restart always -p 6379:6379 redis
+    ```
 1. Update and install all required gems:
     ```
     bundle update
@@ -18,6 +22,8 @@ The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Aust
     ```
     rails s
     ```
+
+docker run --name redis -d --restart always -p 6379:6379 redis
 
 ## Usage
 
