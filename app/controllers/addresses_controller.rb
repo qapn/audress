@@ -23,13 +23,22 @@ class AddressesController < ApplicationController
     end
 
     if search_terms.present?
-      # Form our base SQL query - a LIKE query with our first (and longest) term
-      sql_query = "SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms[0] + "%'"
+      # Form our base SQL query - a LIKE query with our first (and longest) term - or regex query with a number
+      puts search_terms[0].numeric?
+      if search_terms[0].numeric?
+        sql_query = "SELECT * FROM national_address_list WHERE autocomplete ~ '(^|[^\\d])(" + search_terms[0] + ")([^\\d]|$)'"
+      else
+        sql_query = "SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms[0] + "%'"
+      end
 
-      # Build our nested query - with each term, we store our results to a temporary named result set (CTE), and then apply our next term on that result set
+      # Build our nested query - with each term, we store our results to a common table expression (CTE), and then apply our next term on that result set
       # So in most cases, your most ambiguous term will be searched at the end (e.g. a street number), when you've already narrowed down the possible addresses to a few hundred records
       search_terms.drop(1).each_with_index do |term, i|
-        sql_query.prepend("WITH results" + i.to_s + " AS (").concat(") SELECT * FROM results" + i.to_s + " WHERE autocomplete LIKE '%" + term + "%'")
+        if term.numeric?
+          sql_query.prepend("WITH results" + i.to_s + " AS (").concat(") SELECT * FROM results" + i.to_s + " WHERE autocomplete ~ '(^|[^\\d])(" + term + ")([^\\d]|$)'")
+        else
+          sql_query.prepend("WITH results" + i.to_s + " AS (").concat(") SELECT * FROM results" + i.to_s + " WHERE autocomplete LIKE '%" + term + "%'")
+        end
       end
       
       # Limit the total results coming back from our query to 10

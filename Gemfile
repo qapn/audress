@@ -29,6 +29,9 @@ gem 'rack-attack', '~> 5.4'
 # Ruby client library for Redis
 gem 'redis', '~> 4.0'
 
+# Bunch of methods to do simple things
+gem 'finishing_moves', '~> 1.0'
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
