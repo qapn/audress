@@ -18,8 +18,12 @@ class AddressesController < ApplicationController
   # POST /addresses/autocomplete
   def autocomplete
     # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove all but alphanumerical characters + spaces, split it by spaces, and sort by longest to shortest
-    if params[:query].present?
+    # Also don't do anything until we have more than 4 characters
+    if params[:query].present? && params[:query].length > 4
       search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[^A-Z0-9\s]/i, ' ').split(" ").sort_by(&:length).reverse
+    else
+      render json: {"results":"ZERO"}, status: :ok
+      return
     end
 
     if search_terms.present?
@@ -50,12 +54,15 @@ class AddressesController < ApplicationController
       # Return either our results, or an indication that we got no results
       unless results.blank?
         render json: {"results":results}, status: :ok
+        return
       else
         render json: {"results":"ZERO"}, status: :ok
+        return
       end
 
     else
       render json: {"results":"ZERO"}, status: :ok
+      return
     end
 
   end
