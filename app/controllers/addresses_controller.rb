@@ -19,7 +19,7 @@ class AddressesController < ApplicationController
   def autocomplete
     # Don't do anything until we have more than 4 characters
     unless params[:query].present? && params[:query].length > 4
-      render json: {"results":"ZERO"}, status: :not_found
+      render status: :no_content
       return
     end
 
@@ -42,7 +42,6 @@ class AddressesController < ApplicationController
 
     if search_terms.present?
       # Form our base SQL query - a LIKE query with our first (and longest) term - or regex query with a number
-      puts search_terms[0].numeric?
       if search_terms[0].numeric?
         sql_query = "SELECT * FROM national_address_list WHERE autocomplete ~ '(^|[^\\d])(" + search_terms[0] + ")([^\\d]|$)'"
       else
@@ -70,12 +69,12 @@ class AddressesController < ApplicationController
         render json: {"results":results}, status: :ok
         return
       else
-        render json: {"results":"ZERO"}, status: :not_found
+        render status: :no_content
         return
       end
 
     else
-      render json: {"results":"ZERO"}, status: :not_found
+      render status: :no_content
       return
     end
 

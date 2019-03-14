@@ -48,6 +48,7 @@ docker run --name redis -d --restart always -p 6379:6379 redis
   * **Input:**      
     * `182 church street parramatta`
   * **Response:**
+    * `Status: 200 OK`
     * `{ "results": [ { "address_detail_pid": "GANSW711121522", "street_locality_pid": "NSW2810040", "locality_pid": "NSW3184", "building_name": null, "lot_number_prefix": null, "lot_number": null, "lot_number_suffix": null, "flat_type": null, "flat_number_prefix": null, "flat_number": null, "flat_number_suffix": null, "level_type": null, "level_number_prefix": null, "level_number": null, "level_number_suffix": null, "number_first_prefix": null, "number_first": 182, "number_first_suffix": null, "number_last_prefix": null, "number_last": 184, "number_last_suffix": null, "street_name": "CHURCH", "street_class_code": "C", "street_class_type": "CONFIRMED", "street_type_code": "STREET", "street_suffix_code": null, "street_suffix_type": null, "locality_name": "PARRAMATTA", "state_abbreviation": "NSW", "postcode": "2150", "latitude": "-33.81618626", "longitude": "151.004568", "geocode_type": "PROPERTY CENTROID", "confidence": 0, "alias_principal": "P", "primary_secondary": null, "legal_parcel_id": null, "date_created": "2007-10-23", "autocomplete": "182-184 CHURCH STREET, PARRAMATTA NSW 2150" } ] }`
  
 * **No Results Response:**
@@ -55,7 +56,7 @@ docker run --name redis -d --restart always -p 6379:6379 redis
   * **Input:**      
     * `1600 pennsylvania avenue washington`
   * **Response:**
-    * `{ "results": "ZERO" }`
+    * `Status: 204 No Content`
 
 ### G-NAF ID Lookup
 
