@@ -26,6 +26,22 @@ class AddressesController < ApplicationController
       return
     end
 
+    # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove all but alphanumerical characters + spaces, split it by spaces
+    search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[^A-Z0-9\s]/i, ' ').split(" ")
+
+    # Super wildcard query - this is our first attempt to find some records. If we get results here, we'll use them before resorting to a recursive CTE query
+    if search_terms.present?
+      results = Address.find_by_sql("SELECT * FROM national_address_list WHERE autocomplete LIKE '%" + search_terms.join('%') + "%' LIMIT 10")
+
+      # Return our results and finish, or just continue on
+      unless results.blank?
+        render json: {"results":results}, status: :ok
+        return
+      end
+    end
+
+    # Sort our terms from before by longest to shortest, in preparation for our recursive CTE query
+    search_terms = search_terms.sort_by(&:length).reverse
     if search_terms.present?
       # Form our base SQL query - a LIKE query with our first (and longest) term - or regex query with a number
       puts search_terms[0].numeric?
