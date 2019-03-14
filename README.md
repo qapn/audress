@@ -2,7 +2,7 @@
 
 A RESTful API for searching and validating any Australian address. It's designed to work with a flat table Geocoded National Address File (G-NAF) database stored on PostgreSQL, which you can generate with my [G-NAF Importer](https://github.com/qapn/gnaf-importer).
 
-The main search endpoint will build a query with nested temporary named result sets (CTEs), allowing for quick querying against over 13 million addresses.
+The main search endpoint will builds a wildcard query or a recursive common table expression (CTE) query as appropriate, allowing for quick querying against over 13 million addresses.
 
 The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Australian government.
 
@@ -22,8 +22,6 @@ The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Aust
     ```
     rails s
     ```
-
-docker run --name redis -d --restart always -p 6379:6379 redis
 
 ## Usage
 
