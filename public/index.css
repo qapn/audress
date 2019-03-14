@@ -1,0 +1,58 @@
+body:before {
+  content: "";
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url(bg.jpg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  color: #fff;
+  font-family: 'Muli', sans-serif;
+}
+
+a {
+  color: #ff6868;
+}
+
+a:hover { 
+  color: #ffadad;
+}
+
+code {
+  color: #ffadad;
+}
+
+.masthead-brand {
+  float: left;
+}
+
+.nav-masthead {
+  float: right;
+}
+
+.ui-autocomplete-loading {
+  background: white url("https://raw.githubusercontent.com/jquery/codeorigin.jquery.com/master/cdn/ui/1.8.2/themes/base/images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+
+.borderless td, .borderless th {
+    border: none;
+}
+
+.borderless th {
+  text-align: right;
+  vertical-align: middle;
+}

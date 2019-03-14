@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
+    <title>Audress</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+    $(document).ready(function() {
+      $( function() {
+        $( "#stop-autofilling-please" ).autocomplete({
+          minLength: 5,
+          source: function( request, response ) {
+            $.ajax( {
+              url: "/addresses/autocomplete?query=" + request.term,
+              dataType: "json",
+              success: function (data, status, error) {
+                if (status === "nocontent") {
+                  fakearray = {"label": "No results found.", "value": "0"};
+                  array = $.makeArray(fakearray);
+                  response($.map(array, function(array) {
+                    return {
+                      label: array.label,
+                      value: array.value
+                    };
+                  }));
+                } else {
+                  response($.map(data.results, function(data) {
+                    return {
+                      label: data.autocomplete,
+                      address_detail_pid: data.address_detail_pid,
+                      street_locality_pid: data.street_locality_pid,
+                      locality_pid: data.locality_pid,
+                      building_name: data.building_name,
+                      lot_number_prefix: data.lot_number_prefix,
+                      lot_number: data.lot_number,
+                      lot_number_suffix: data.lot_number_suffix,
+                      flat_type: data.flat_type,
+                      flat_number_prefix: data.flat_number_prefix,
+                      flat_number: data.flat_number,
+                      flat_number_suffix: data.flat_number_suffix,
+                      level_type: data.level_type,
+                      level_number_prefix: data.level_number_prefix,
+                      level_number: data.level_number,
+                      level_number_suffix: data.level_number_suffix,
+                      number_first_prefix: data.number_first_prefix,
+                      number_first: data.number_first,
+                      number_first_suffix: data.number_first_suffix,
+                      number_last_prefix: data.number_last_prefix,
+                      number_last: data.number_last,
+                      number_last_suffix: data.number_last_suffix,
+                      street_name: data.street_name,
+                      street_class_code: data.street_class_code,
+                      street_class_type: data.street_class_type,
+                      street_type_code: data.street_type_code,
+                      street_suffix_code: data.street_suffix_code,
+                      street_suffix_type: data.street_suffix_type,
+                      locality_name: data.locality_name,
+                      state_abbreviation: data.state_abbreviation,
+                      postcode: data.postcode,
+                      latitude: data.latitude,
+                      longitude: data.longitude,
+                      geocode_type: data.geocode_type,
+                      confidence: data.confidence,
+                      alias_principal: data.alias_principal,
+                      primary_secondary: data.primary_secondary,
+                      legal_parcel_id: data.legal_parcel_id,
+                      date_created: data.date_created,
+                      autocomplete: data.autocomplete
+                    };
+                  }));
+                }
+              }
+            });
+          },
+          focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+          },
+          select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $('#full-results').val(JSON.stringify(ui.item, null, 2));
+            $('#building-name').val(ui.item.building_name);
+            $('#street-number').val(ui.item.number_first);
+            $('#street-name').val(ui.item.street_name);
+            $('#suburb').val(ui.item.locality_name);
+            $('#state').val(ui.item.state_abbreviation);
+            $('#postcode').val(ui.item.postcode);
+            $('#latitude').val(ui.item.latitude);
+            $('#longitude').val(ui.item.longitude);
+          }
+        });
+      });
+      $(document).on('focus', ':input', function() {
+        $(this).attr('autocomplete', 'chrome-seriously-stop-autofilling-you-piece-of-software');
+      });
+      $('#hostname').text(location.hostname+(location.port ? ':'+location.port: ''));
+      $("#api").on('shown.bs.collapse', function() {
+          window.location = "#api";
+      });
+    });
+    </script>
+  </head>
+  <body>
+    <div class="mx-auto d-flex p-4 px-4 flex-column" style="width: 1000px;">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h1 class="masthead-brand">🌏 Audress</h1>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="#example-search">Try</a>
+            <a class="nav-link" data-toggle="collapse" data-target="#api" href="#api">Usage</a>
+            <a class="nav-link" href="https://github.com/qapn/audress">GitHub</a>
+            <a class="nav-link" href="https://github.com/qapn">Author</a>
+          </nav>
+        </div>
+      </header>
+
+      <div class="text-center">
+        <br>
+        <h2>Free, open source address validation for Australia 🇦🇺</h2>
+        <p class="lead">Try it out:</p>
+      </div>
+
+      <div id="example-search" class="ui-widge center-block">
+        <label for="stop-autofilling-please"></label>
+        <input class="form-control" id="stop-autofilling-please">
+      </div>
+      <br>
+      <div class="w-75 mx-auto">
+        <table class="table borderless table-sm">
+          <tbody>
+            <tr>
+              <th style="width: 25%" scope="row" class="text-right align-middle">Building Name</th>
+              <td style="width: 75%" class="text-left"><input class="form-control" id="building-name" disabled></td>
+            </tr>
+            <tr>
+              <th>Street Number</th>
+              <td><input class="form-control" id="street-number" disabled></td>
+            </tr>
+            <tr>
+              <th>Street Name</th>
+              <td><input class="form-control" id="street-name" disabled></td>
+            </tr>
+            <tr>
+              <th>Suburb</th>
+              <td><input class="form-control" id="suburb" disabled></td>
+            </tr>
+            <tr>
+              <th>State</th>
+              <td><input class="form-control" id="state" disabled></td>
+            </tr>
+            <tr>
+              <th>Postcode</th>
+              <td><input class="form-control" id="postcode" disabled></td>
+            </tr>
+            <tr>
+              <th>Latitude</th>
+              <td><input class="form-control" id="latitude" disabled></td>
+            </tr>
+            <tr>
+              <th>Longitude</th>
+              <td><input class="form-control" id="longitude" disabled></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="text-center">
+          <button class="btn btn-lg btn-secondary" data-toggle="collapse" data-target="#full-data">Show me the full data response</button>
+          <div id="full-data" class="collapse">
+            <br>
+            <textarea class="form-control" id="full-results" rows="10" disabled></textarea>
+          </div>
+          <br>
+          <br>
+          <button class="btn btn-lg btn-secondary" data-toggle="collapse" data-target="#api">Let me use the API</button>
+          <div id="api" class="collapse">
+            <br>
+            <p>This installation of Audress at <code><span id="hostname"></span></code> is limited to 100 queries every 5 minutes. You can run it with higher limits, get the code <a href="https://github.com/qapn/audress">here</a>.</p>
+            <h3>Autocomplete</h3>
+            <div class="text-left">
+              <p>Returns up to 10 matching address records from a search term.</p>
+              <ul>
+                <li>
+                  <strong>URL</strong>
+                  <ul><li><code><span id="hostname"></span>/addresses/autocomplete</li></code></ul>
+                </li>
+                <li>
+                  <strong>Method</strong>
+                  <ul><li><code>POST</code> or <code>GET</code></li></ul>
+                </li>
+                <li>
+                  <strong>URL Params</strong>
+                  <ul><li><code>query=[space separated search terms]</code></li></ul>
+                </li>
+                <li>
+                  <strong>Success Response:</strong>
+                  <ul>
+                    <li>
+                      <strong>Input:</strong>
+                      <ul><li><code>182 church street parramatta</code></li></ul>
+                    </li>
+                    <li>
+                      <strong>Response:</strong>
+                      <ul>
+                        <li><code>Status: 200 OK</code></li>
+                        <li><code>
+                          { "results": [ { "address_detail_pid": "GANSW711121522", "street_locality_pid": "NSW2810040", "locality_pid": "NSW3184", "building_name": null, "lot_number_prefix": null, "lot_number": null, "lot_number_suffix": null, "flat_type": null, "flat_number_prefix": null, "flat_number": null, "flat_number_suffix": null, "level_type": null, "level_number_prefix": null, "level_number": null, "level_number_suffix": null, "number_first_prefix": null, "number_first": 182, "number_first_suffix": null, "number_last_prefix": null, "number_last": 184, "number_last_suffix": null, "street_name": "CHURCH", "street_class_code": "C", "street_class_type": "CONFIRMED", "street_type_code": "STREET", "street_suffix_code": null, "street_suffix_type": null, "locality_name": "PARRAMATTA", "state_abbreviation": "NSW", "postcode": "2150", "latitude": "-33.81618626", "longitude": "151.004568", "geocode_type": "PROPERTY CENTROID", "confidence": 0, "alias_principal": "P", "primary_secondary": null, "legal_parcel_id": null, "date_created": "2007-10-23", "autocomplete": "182-184 CHURCH STREET, PARRAMATTA NSW 2150" } ] }
+                        </code></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <strong>No Results Response:</strong>
+                  <ul>
+                    <li>
+                      <strong>Input:</strong>
+                      <ul><li><code>1600 pennsylvania avenue washington</code></li></ul>
+                    </li>
+                    <li>
+                      <strong>Response:</strong>
+                      <ul><li><code>Status: 204 No Content</code></li></ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <br>
+            <h3>G-NAF ID Lookup</h3>
+            <div class="text-left">
+              <p>Returns the record matching a G-NAF ID.</p>
+              <ul>
+                <li>
+                  <strong>URL</strong>
+                  <ul><li><code><span id="hostname"></span>/addresses/:id</li></code></ul>
+                </li>
+                <li>
+                  <strong>Method</strong>
+                  <ul><li><code>GET</code></li></ul>
+                </li>
+                <li>
+                  <strong>Response:</strong>
+                  <ul>
+                    <li>
+                      Identical to the autocomplete endpoint.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
