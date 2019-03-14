@@ -17,12 +17,9 @@ class AddressesController < ApplicationController
 
   # POST /addresses/autocomplete
   def autocomplete
-    # Take our search query, sanitize it with ActiveRecord, strip the first and last resulting single quotes (we add these ourselves later), capitalise all letters, remove all but alphanumerical characters + spaces, split it by spaces, and sort by longest to shortest
-    # Also don't do anything until we have more than 4 characters
-    if params[:query].present? && params[:query].length > 4
-      search_terms = ActiveRecord::Base.connection.quote(params[:query])[1..-2].upcase.gsub(/[^A-Z0-9\s]/i, ' ').split(" ").sort_by(&:length).reverse
-    else
-      render json: {"results":"ZERO"}, status: :ok
+    # Don't do anything until we have more than 4 characters
+    unless params[:query].present? && params[:query].length > 4
+      render json: {"results":"ZERO"}, status: :not_found
       return
     end
 
@@ -42,6 +39,7 @@ class AddressesController < ApplicationController
 
     # Sort our terms from before by longest to shortest, in preparation for our recursive CTE query
     search_terms = search_terms.sort_by(&:length).reverse
+
     if search_terms.present?
       # Form our base SQL query - a LIKE query with our first (and longest) term - or regex query with a number
       puts search_terms[0].numeric?
@@ -72,12 +70,12 @@ class AddressesController < ApplicationController
         render json: {"results":results}, status: :ok
         return
       else
-        render json: {"results":"ZERO"}, status: :ok
+        render json: {"results":"ZERO"}, status: :not_found
         return
       end
 
     else
-      render json: {"results":"ZERO"}, status: :ok
+      render json: {"results":"ZERO"}, status: :not_found
       return
     end
 
