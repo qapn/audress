@@ -1,8 +1,15 @@
-# audress - Australian Address Validation API
+<h1 align="center">Audress</h1>
+<p align="center">
+    <img alt="Audress Demo" src="extra/demo.gif">
+</p>
 
-A RESTful API for searching and validating any Australian address. It's designed to work with a flat table Geocoded National Address File (G-NAF) database stored on PostgreSQL, which you can generate with my [G-NAF Importer](https://github.com/qapn/gnaf-importer).
+## About
+
+Audress is a RESTful API for searching and validating any Australian address. It's designed to work with a flat table Geocoded National Address File (G-NAF) database stored on PostgreSQL, which you can generate with the [G-NAF Importer](https://github.com/qapn/gnaf-importer).
 
 The main search endpoint will builds a wildcard query or a recursive common table expression (CTE) query as appropriate, allowing for quick querying against over 13 million addresses.
+
+You can access a basic demo implementation at [audress.xyz](https://audress.xyz), running on a lightweight VPS.
 
 The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Australian government.
 
@@ -22,6 +29,7 @@ The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Aust
     ```
     rails s
     ```
+    You will then be able to see a demo implementation at [http://localhost:3000](http://localhost:3000).
 
 ## Usage
 
