@@ -11,7 +11,7 @@ The main search endpoint will builds a wildcard query or a recursive common tabl
 
 You can access a basic demo implementation at [audress.xyz](https://audress.xyz), running on a lightweight VPS.
 
-The underlying raw G-NAF data is licensed CC BY 4.0, and is provided by the Australian government.
+The underlying raw [G-NAF data](https://data.gov.au/dataset/geocoded-national-address-file-g-naf) is licensed CC BY 4.0, and is provided by the Australian government.
 
 ## Setup
 
