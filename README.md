@@ -9,8 +9,6 @@ Audress is a RESTful API for searching and validating any Australian address. It
 
 The main search endpoint will builds a wildcard query or a recursive common table expression (CTE) query as appropriate, allowing for quick querying against over 13 million addresses.
 
-You can access a basic demo implementation at [audress.xyz](https://audress.xyz), running on a lightweight VPS.
-
 The underlying raw [G-NAF data](https://data.gov.au/dataset/geocoded-national-address-file-g-naf) is licensed CC BY 4.0, and is provided by the Australian government.
 
 ## Setup
