@@ -1,6 +1,7 @@
 class Rack::Attack
   # Set cache store for throttling - local Redis without authentication
-  Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(host: "localhost", port: "6379")
+  redis_url = ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } + '/cache'
+  Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: redis_url, expires_in: 480.minutes)
 
   # Set custom error when throttled
   Rack::Attack.throttled_response = lambda do |env|

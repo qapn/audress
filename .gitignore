@@ -49,3 +49,7 @@ node_modules/
 
 # Ignore macOS metadata nonsense
 .DS_Store
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/G-NAF/
