@@ -19,9 +19,9 @@ The underlying raw [G-NAF data](https://data.gov.au/dataset/geocoded-national-ad
     ```
     docker run --name redis -d --restart always -p 6379:6379 redis
     ```
-1. Update and install all required gems:
+1. Install all required gems:
     ```
-    bundle update
+    bundle install
     ```
 1. Start the server:
     ```
